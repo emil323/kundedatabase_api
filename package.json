@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/emil323/kundedatabase_api/issues"
   },
-  "homepage": "https://github.com/emil323/kundedatabase_api#readme"
+  "homepage": "https://github.com/emil323/kundedatabase_api#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
