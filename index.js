@@ -3,7 +3,10 @@ const app = express();
 const dotenv = require('dotenv')
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
+
 const clients_route = require('./routes/clients');
+const files_route = require('./routes/files');
+
 const requireAuth = require('./auth/azure-ad.auth') 
 /**
  * Bruk dotenv modulen til å laste inn env variabler fra .env fila, dersom vi er i development modus
@@ -34,6 +37,8 @@ app.use(requireAuth())
   */
 
  app.use('/clients', clients_route)
+ app.use('/files', files_route)
+ 
 
  /**
  * Start server
