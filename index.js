@@ -1,6 +1,21 @@
+
+/**
+ * Bruk dotenv modulen til å laste inn env variabler fra .env fila, dersom vi er i development modus
+ */
+
+if(process.env.NODE_ENV !== 'production') {
+
+  require('dotenv').config({path: __dirname + '/.env'})
+
+  if(!process.env.PORT) {
+    console.error("Du mangler .env fila i kundedatabase_api!")
+    process.exit()
+  }
+}
+
 const express = require('express');
 const app = express();
-const dotenv = require('dotenv')
+
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
 
@@ -8,13 +23,7 @@ const clients_route = require('./routes/clients');
 const files_route = require('./routes/files');
 
 const requireAuth = require('./auth/azure-ad.auth') 
-/**
- * Bruk dotenv modulen til å laste inn env variabler fra .env fila, dersom vi er i development modus
- */
 
-if(process.env.NODE_ENV !== 'production') {
-   dotenv.config()
- }
  /*
    Allow Cross Origin Access 
  */
@@ -46,9 +55,9 @@ app.use(requireAuth())
 
 const port = process.env.PORT || 8080;
 
-const server = app.listen(port, function () {
-   var port = server.address().port 
-   console.log("-----------------------------")
-   console.log("Node.JS Backend API Started: http://localhost:%s", port)
-   console.log("-----------------------------")
-})
+
+  app.listen(port, () => {
+    console.log("-----------------------------")
+    console.log("Node.JS Backend API Started: http://localhost:%s", port)
+    console.log("-----------------------------")
+ })

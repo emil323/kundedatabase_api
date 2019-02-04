@@ -1,0 +1,1 @@
+module.exports.DB_ERR = 'DB_ERR'

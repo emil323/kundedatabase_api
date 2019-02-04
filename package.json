@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "echo \"Kjør npm start i kundedatabase_frontend heller!\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,8 @@
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
-    "express-bearer-token": "^2.2.0"
+    "express-bearer-token": "^2.2.0",
+    "pg": "^7.8.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"
