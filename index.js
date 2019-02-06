@@ -4,7 +4,6 @@
  */
 
 if(process.env.NODE_ENV !== 'production') {
-
   require('dotenv').config({path: __dirname + '/.env'})
 
   if(!process.env.PORT) {
@@ -19,6 +18,7 @@ const app = express();
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
 
+const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
 const files_route = require('./routes/files');
 
@@ -39,13 +39,14 @@ app.use(bearerToken())
 /*
   Middleware for azure authentication. All api access requires valid token.
 */
-app.use(requireAuth())
+//app.use(requireAuth())
 
  /**
   * Definer API ruter
   */
 
  app.use('/clients', clients_route)
+ app.use('/client', client_route)
  app.use('/files', files_route)
  
 
@@ -54,7 +55,6 @@ app.use(requireAuth())
  */
 
 const port = process.env.PORT || 8080;
-
 
   app.listen(port, () => {
     console.log("-----------------------------")
