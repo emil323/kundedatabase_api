@@ -13,11 +13,9 @@ exports.get = (req,res) => {
     const clientID = req.params.client_id
 
     const query = `
-        SELECT C.name, F.id AS root_folder, c.id as client_id
-        FROM Folder AS F, Client AS C
-        WHERE C.id = F.client_id
-        AND C.id = $1
-        AND parent_id IS NULL;
+        SELECT name
+        FROM Client
+        WHERE id = $1
     `
 
     db.query(query,[clientID],(err,queryRes) => {
@@ -38,20 +36,16 @@ exports.files = (req, res) => {
     const clientID = req.params.client_id
 
     const query = `
-        SELECT id,client_id,parent_id,name,ref,last_changed,
+        SELECT id,client_id,parent_id,name,ref, type,last_changed, is_directory,
             CASE
-                WHEN client_id IS NULL THEN FALSE
-                ELSE TRUE
-            END AS is_directory,
-            CASE
-                WHEN parent_id IS NULL THEN TRUE
-                ELSE FALSE
+            WHEN parent_id IS NULL THEN TRUE
+            ELSE FALSE
             END AS is_root
-            FROM
-            (SELECT id, client_id, parent_id, name, null AS ref, last_changed
+        FROM
+            (SELECT id, client_id, parent_id, name, null AS ref, 'folder' AS type, last_changed, true AS is_directory
             FROM Folder
-                UNION
-            SELECT File.id, Folder.client_id, File.folder_id, File.name, File.ref, File.last_changed
+            UNION
+            SELECT File.id, Folder.client_id, File.folder_id, File.name, File.ref, File.type, File.last_changed, false AS is_directory
             FROM File, Folder
             WHERE Folder.id = File.folder_id) AS U
         WHERE client_id = $1
@@ -64,7 +58,7 @@ exports.files = (req, res) => {
                 error: errors.DB_ERR})
                 //TODO: Mor error handling
         } else {
-            res.send(queryRes.rows[0])
+            res.send(queryRes.rows)
         }
     })
 

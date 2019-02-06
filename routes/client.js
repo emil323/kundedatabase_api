@@ -5,7 +5,7 @@ const router = express.Router()
 const client = require('../controllers/client')
 
 /**
- * Routes for /clients
+ * Routes for /client
  */
 
 router.get('/:client_id', client.get)
