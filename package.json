@@ -19,10 +19,13 @@
   "homepage": "https://github.com/emil323/kundedatabase_api#readme",
   "dependencies": {
     "azure-ad-jwt": "^1.1.0",
+    "azure-storage": "^2.10.2",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-bearer-token": "^2.2.0",
+    "multer": "^1.4.1",
+    "multer-azure-blob-storage": "^1.0.2",
     "pg": "^7.8.0"
   },
   "devDependencies": {

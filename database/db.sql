@@ -54,9 +54,10 @@ CREATE TABLE File (
   CONSTRAINT File_PK PRIMARY KEY (id),
   FOREIGN KEY (folder_id) REFERENCES Folder(id)
 );
-
+SELECT * FROM File;
 INSERT INTO File(folder_id, name, ref, type) VALUES('2d88f3de-4432-4ed4-9816-2b170cee40f7', 'test','ref','pdf');
-
+SELECT ref, type FROM File WHERE id = '';
+DELETE FROM File;
 /**
   Trigger to create root folder when a client is created
  */
@@ -89,6 +90,8 @@ WHERE C.id = F.client_id
 AND parent_id IS NULL;
 
 SELECT * FROM File;
+
+
 
 SELECT id,client_id,parent_id,name,ref, type,last_changed, is_directory,
   CASE
