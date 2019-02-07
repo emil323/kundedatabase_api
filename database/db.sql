@@ -20,6 +20,16 @@ CREATE TABLE Client (
   CONSTRAINT Client_PK PRIMARY KEY(id)
 );
 
+-- Emil, ta en titt på AccessLog?
+CREATE TABLE AccessLog (
+  id UUID DEFAULT gen_random_uuid(),
+  email TEXT unique NOT NULL,
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  last_changed TIMESTAMP DEFAULT NOW(),
+  CONSTRAINT AccessLog_PK PRIMARY KEY(id)
+)
+
 CREATE TABLE Favourites (
   user_id UUID NOT NULL,
   client_id UUID NOT NULL,
@@ -79,6 +89,10 @@ CREATE TRIGGER create_root_folder_trigger
   FOR EACH ROW
   EXECUTE PROCEDURE create_root_folder();
 
+-- AccessLog inserts
+INSERT INTO AccessLog(first_name) VALUES("Jan");
+INSERT INTO AccessLog(first_name) VALUES("Kriss");
+INSERT INTO AccessLog(first_name) VALUES("Emil");
 
 INSERT INTO Client(name) VALUES('Exodus');
 INSERT INTO Client(name) VALUES('Anous');
