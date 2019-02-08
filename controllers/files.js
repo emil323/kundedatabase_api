@@ -34,7 +34,8 @@ exports.get_file = (req, res) => {
  */
 
 exports.upload = (req,res) => {
-
+    console.log(req.files)
+/*
     const query = `
         INSERT INTO File(folder_id, name, ref, type) 
         VALUES($1, $2,$3,$4)`
@@ -58,4 +59,5 @@ exports.upload = (req,res) => {
         res.send({success: false, 
             error: 'NO_FILE'})
     }
+    */
 }
