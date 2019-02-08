@@ -1,6 +1,7 @@
 const db = require('../database')
 const errors = require('../errors')
 const blobService = require('../storage/azure-storage')
+const Promise = require('bluebird')
 
 /**
  * Get a file
@@ -34,7 +35,34 @@ exports.get_file = (req, res) => {
  */
 
 exports.upload = (req,res) => {
-    console.log(req.files)
+
+    const query = `
+        INSERT INTO File(folder_id, name, ref, type) 
+        VALUES($1, $2,$3,$4)`
+
+    const folder_id =  req.params.folder_id
+
+    //Make a promise map
+    Promise.map(req.files, file => {
+        return new Promise((resolve) => {
+
+            const {originalname, mimetype, blobName} = file 
+
+            db.query(query,[folder_id, originalname, blobName, mimetype],(err,queryRes) => {
+                if(err) {
+                    console.log(err)
+                    resolve({originalname,success: false, 
+                        error: errors.DB_ERR})
+                } else {
+                    resolve({originalname,success: true})
+                }
+            })
+        })
+    }, {concurrency:1})
+    .then(result => {
+        res.send(result)
+    }) 
+
 /*
     const query = `
         INSERT INTO File(folder_id, name, ref, type) 
