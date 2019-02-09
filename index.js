@@ -21,6 +21,7 @@ const bearerToken = require('express-bearer-token')
 const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
 const files_route = require('./routes/files');
+const accessLog_route = require('./routes/accessLog');
 
 const requireAuth = require('./auth/azure-ad.auth') 
 
@@ -44,10 +45,10 @@ app.use(bearerToken())
  /**
   * Definer API ruter
   */
-
- app.use('/clients', clients_route)
- app.use('/client', client_route)
- app.use('/files', files_route)
+app.use('/accesslog', accessLog_route);
+app.use('/clients', clients_route)
+app.use('/client', client_route)
+app.use('/files', files_route)
  
 
  /**
