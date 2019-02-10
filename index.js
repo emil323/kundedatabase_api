@@ -17,6 +17,7 @@ const app = express();
 
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
+const bodyParser = require('body-parser')
 
 const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
@@ -24,6 +25,12 @@ const files_route = require('./routes/files');
 
 const requireAuth = require('./auth/azure-ad.auth') 
 
+
+/**
+ * Handle post request formatting
+ */
+
+app.use(express.json())
  /*
    Allow Cross Origin Access 
  */
@@ -38,6 +45,7 @@ app.use(bearerToken())
 
 /*
   Middleware for azure authentication. All api access requires valid token.
+  Comment out to disable authentication, useful when creating new functionality in API
 */
 //app.use(requireAuth())
 

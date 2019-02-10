@@ -20,14 +20,45 @@ exports.get_file = (req, res) => {
             res.send({success: false, 
                 error: errors.DB_ERR})
         } else {
-            const {ref, type} = queryRes.rows[0]
-            
-            blobService.getBlobToStream(ref, res, (error, result, response) => {
-                if (error) console.log(error)
-              })
+            if(queryRes.rows.length !== 0) { 
+
+                const {ref, type} = queryRes.rows[0]
+
+                blobService.getBlobToStream(ref, res, (error, result, response) => {
+                    if (error) console.log(error)
+                })
+            } else {
+                res.sendStatus(404)
+            }
         }
     })
 }
+
+
+/**
+ * Creates a folder within a directory
+ */
+
+ exports.create_folder = (req, res) => {
+
+    const query = `
+        SELECT create_folder($1,$2)
+    `
+    const {folder_id} = req.params
+    const {new_folder_name} = req.body
+
+    
+    db.query(query,[folder_id, new_folder_name],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+    
+ }
 
 
 /**
@@ -38,7 +69,8 @@ exports.upload = (req,res) => {
 
     const query = `
         INSERT INTO File(folder_id, name, ref, type) 
-        VALUES($1, $2,$3,$4)`
+        VALUES($1,$2,$3,$4)
+        `
 
     const folder_id =  req.params.folder_id
 
@@ -47,8 +79,9 @@ exports.upload = (req,res) => {
         return new Promise((resolve) => {
 
             const {originalname, mimetype, blobName} = file 
+            const insert = [folder_id, originalname, blobName, mimetype]
 
-            db.query(query,[folder_id, originalname, blobName, mimetype],(err,queryRes) => {
+            db.query(query,insert,(err) => {
                 if(err) {
                     console.log(err)
                     resolve({originalname,success: false, 
@@ -62,30 +95,4 @@ exports.upload = (req,res) => {
     .then(result => {
         res.send(result)
     }) 
-
-/*
-    const query = `
-        INSERT INTO File(folder_id, name, ref, type) 
-        VALUES($1, $2,$3,$4)`
-
-    const folder_id =  req.params.folder_id
-    const {originalname, mimetype, blobName} = req.file 
-
-    console.log(req.file)
-
-    if(req.file) {
-        db.query(query,[folder_id, originalname, blobName, mimetype],(err,queryRes) => {
-            if(err) {
-                console.log(err)
-                res.send({success: false, 
-                    error: errors.DB_ERR})
-            } else {
-                res.send({success: true})
-            }
-        })
-    } else {
-        res.send({success: false, 
-            error: 'NO_FILE'})
-    }
-    */
 }

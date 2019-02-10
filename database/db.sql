@@ -28,7 +28,7 @@ CREATE TABLE AccessLog (
   last_name VARCHAR(50),
   last_changed TIMESTAMP DEFAULT NOW(),
   CONSTRAINT AccessLog_PK PRIMARY KEY(id)
-)
+);
 
 CREATE TABLE Favourites (
   user_id UUID NOT NULL,
