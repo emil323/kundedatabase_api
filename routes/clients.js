@@ -9,7 +9,6 @@ const clients = require('../controllers/clients')
  */
 
 router.get("/", clients.list)
-router.get("/", clients.listAccessLog)   
 router.post("/create", clients.create)   
   
 module.exports = router

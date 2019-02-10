@@ -15,17 +15,6 @@ exports.list = (req,res) => {
     })
 }
 
-/**
- * List access log
- */
-
-exports.listAccessLog = (req, res) => {
-    const query = `SELECT id, email, first_name, last_name, last_changed FROM AccessLog`
-
-    db.query(query,null,(err,queryRes) => {
-        res.send({accesslog: queryRes.rows})
-    })
-}
 
 /**
  * Create client
