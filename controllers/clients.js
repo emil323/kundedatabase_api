@@ -7,7 +7,7 @@ const errors = require('../errors')
  */
 
 exports.list = (req,res) => {
-
+    console.log(req)
     const query = `SELECT id, name FROM Client`
 
     db.query(query,null,(err,queryRes) => {

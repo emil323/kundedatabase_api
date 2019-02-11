@@ -23,6 +23,7 @@ const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
 const users_route = require('./routes/users')
 const files_route = require('./routes/files');
+const users_route = require('./routes/users');
 const accessLog_route = require('./routes/accessLog');
 
 const requireAuth = require('./auth/azure-ad.auth') 
@@ -49,7 +50,7 @@ app.use(bearerToken())
   Middleware for azure authentication. All api access requires valid token.
   Comment out to disable authentication, useful when creating new functionality in API
 */
-//app.use(requireAuth())
+app.use(requireAuth())
 
  /**
   * Definer API ruter
@@ -57,6 +58,7 @@ app.use(bearerToken())
 app.use('/accesslog', accessLog_route);
 app.use('/clients', clients_route)
 app.use('/client', client_route)
+app.use('/users', users_route)
 app.use('/files', files_route)
 app.use('/useraccess', users_route);
  

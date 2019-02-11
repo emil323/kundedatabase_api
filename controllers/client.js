@@ -10,6 +10,7 @@ const errors = require('../errors')
 
 exports.get = (req,res) => {
 
+
     const clientID = req.params.client_id
 
     const query = `
