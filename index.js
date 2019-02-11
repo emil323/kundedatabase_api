@@ -21,7 +21,6 @@ const bodyParser = require('body-parser')
 
 const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
-const users_route = require('./routes/users')
 const files_route = require('./routes/files');
 const users_route = require('./routes/users');
 const accessLog_route = require('./routes/accessLog');
