@@ -20,8 +20,9 @@ exports.list = (req,res) => {
  * Create client
  */
 exports.create = (req,res) => {
+    
+    const name = req.body.client
 
-    const name = req.body.name
 
     const query = `INSERT INTO Client(name) VALUES($1)`
 

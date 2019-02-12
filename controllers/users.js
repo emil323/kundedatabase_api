@@ -21,11 +21,13 @@ exports.list = (req,res) => {
  */
 exports.create = (req,res) => {
 
-    const name = req.body.name
+    const email = req.body.email
+    const first_name = req.body.first_name
+    const last_name = req.body.last_name
 
-    const query = `INSERT INTO Consultant(name) VALUES($1)`
+    const query = `INSERT INTO Consultant(email, first_name, last_name) VALUES($1, $2, $3)`
 
-    db.query(query,[name],(err,queryRes) => {
+    db.query(query,[email, first_name, last_name],(err,queryRes) => {
         if(err) {
             console.log(err)
             res.send({success: false, 
