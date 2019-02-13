@@ -34,6 +34,49 @@ exports.get_file = (req, res) => {
     })
 }
 
+exports.move_folder = (req, res) => {
+
+    const query = `
+        UPDATE Folder
+        SET parent_id = $1
+        WHERE id = $2
+    `
+    const {folder_id, parent_folder} = req.params
+
+    
+    db.query(query,[parent_folder,folder_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+    
+ }
+
+exports.move_file = (req, res) => {
+
+    const query = `
+        UPDATE File
+        SET folder_id = $1
+        WHERE id = $2
+    `
+    const {folder_id, file_id} = req.params
+
+    
+    db.query(query,[folder_id, file_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+    
+ }
 
 /**
  * Creates a folder within a directory
