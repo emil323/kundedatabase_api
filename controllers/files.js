@@ -34,6 +34,51 @@ exports.get_file = (req, res) => {
     })
 }
 
+
+exports.rename_folder = (req, res) => {
+
+    const query = `
+        UPDATE Folder
+        SET name = $1
+        WHERE id = $2
+    `
+    const {folder_id} = req.params
+    const {new_name} = req.body
+    
+    db.query(query,[new_name,folder_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+    
+ }
+
+ exports.rename_file = (req, res) => {
+
+    const query = `
+        UPDATE File
+        SET name = $1
+        WHERE id = $2
+    `
+    const {file_id} = req.params
+    const {new_name} = req.body
+    
+    db.query(query,[new_name,file_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+    
+ }
+
 exports.move_folder = (req, res) => {
 
     const query = `
