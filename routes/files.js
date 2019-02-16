@@ -10,6 +10,10 @@ router.post('/folder/:folder_id/create_folder', files.create_folder)
 router.post('/folder/:folder_id/move/:parent_folder', files.move_folder)
 router.post('/:file_id/move/:folder_id', files.move_file)
 
+//Renaming
+router.post('/folder/:folder_id/rename', files.rename_folder)
+router.post('/:file_id/rename', files.rename_file)
+
 router.get('/:file_id/:file_name', files.get_file) 
 
 module.exports = router
