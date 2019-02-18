@@ -33,7 +33,7 @@ exports.get = (req,res) => {
 
 }
 
-exports.files = (req, res) => {
+exports.list_files = (req, res) => {
 
     const clientID = req.params.client_id
 

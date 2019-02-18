@@ -21,7 +21,8 @@ const bodyParser = require('body-parser')
 
 const client_route = require('./routes/client');
 const clients_route = require('./routes/clients');
-const files_route = require('./routes/files');
+const file_route = require('./routes/file');
+const folder_route = require('./routes/folder');
 const users_route = require('./routes/users');
 const accessLog_route = require('./routes/accessLog');
 
@@ -58,7 +59,8 @@ app.use('/accesslog', accessLog_route);
 app.use('/clients', clients_route)
 app.use('/client', client_route)
 app.use('/users', users_route)
-app.use('/files', files_route)
+app.use('/file', file_route)
+app.use('/folder', folder_route)
 app.use('/useraccess', users_route);
  
 

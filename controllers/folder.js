@@ -1,41 +1,15 @@
 const db = require('../database')
 const errors = require('../errors')
-const blobService = require('../storage/azure-storage')
+
 const Promise = require('bluebird')
 
 /**
  * Get a file
  */
 
-exports.get_file = (req, res) => {
-
-    const query = `
-        SELECT ref, type FROM File WHERE id = $1
-    `
-    const file_id =  req.params.file_id
-
-    db.query(query,[file_id],(err,queryRes) => {
-        if(err) {
-            console.log(err)
-            res.send({success: false, 
-                error: errors.DB_ERR})
-        } else {
-            if(queryRes.rows.length !== 0) { 
-
-                const {ref, type} = queryRes.rows[0]
-
-                blobService.getBlobToStream(ref, res, (error, result, response) => {
-                    if (error) console.log(error)
-                })
-            } else {
-                res.sendStatus(404)
-            }
-        }
-    })
-}
 
 
-exports.rename_folder = (req, res) => {
+exports.rename = (req, res) => {
 
     const query = `
         UPDATE Folder
@@ -57,39 +31,18 @@ exports.rename_folder = (req, res) => {
     
  }
 
- exports.rename_file = (req, res) => {
 
-    const query = `
-        UPDATE File
-        SET name = $1
-        WHERE id = $2
-    `
-    const {file_id} = req.params
-    const {new_name} = req.body
-    
-    db.query(query,[new_name,file_id],(err) => {
-        if(err) {
-            console.log(err)
-            res.send({success: false, 
-                error: errors.DB_ERR})
-        } else {
-            res.send({success: true})
-        }
-    })
-    
- }
-
-exports.move_folder = (req, res) => {
+exports.move = (req, res) => {
 
     const query = `
         UPDATE Folder
         SET parent_id = $1
         WHERE id = $2
     `
-    const {folder_id, parent_folder} = req.params
-
+    const {folder_id} = req.params
+    const {new_parent_folder} = req.body
     
-    db.query(query,[parent_folder,folder_id],(err) => {
+    db.query(query,[new_parent_folder,folder_id],(err) => {
         if(err) {
             console.log(err)
             res.send({success: false, 
@@ -101,30 +54,17 @@ exports.move_folder = (req, res) => {
     
  }
 
-exports.move_file = (req, res) => {
 
-    const query = `
-        UPDATE File
-        SET folder_id = $1
-        WHERE id = $2
-    `
-    const {folder_id, file_id} = req.params
+ exports.delete = (req, res) => {
+    
+    
 
-    
-    db.query(query,[folder_id, file_id],(err) => {
-        if(err) {
-            console.log(err)
-            res.send({success: false, 
-                error: errors.DB_ERR})
-        } else {
-            res.send({success: true})
-        }
-    })
-    
+
  }
+
 
 /**
- * Creates a folder within a directory
+ * Creates a folder within a folder
  */
 
  exports.create_folder = (req, res) => {

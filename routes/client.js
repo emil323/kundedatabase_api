@@ -9,6 +9,6 @@ const client = require('../controllers/client')
  */
 
 router.get('/:client_id', client.get)
-router.get('/:client_id/files', client.files)
+router.get('/:client_id/files', client.list_files)
 
 module.exports = router
