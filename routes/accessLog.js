@@ -2,12 +2,13 @@ const express = require('express')
 const router = express.Router()
 
 //Import accessLog controller
-const clients = require('../controllers/accessLog')
+const accessLog = require('../controllers/accessLog')
 
 /**
  * Routes for /accessLog
  */
 
-router.get("/", clients.listAccessLog)   
+router.get("/", accessLog.listAccessLog)   
+router.post("/create", accessLog.create) 
 
 module.exports = router
