@@ -76,5 +76,19 @@ exports.rename = (req, res) => {
 
 
 exports.delete = (req, res) => {
-     
+    const query = `
+        SELECT delete_file($1)
+    `
+
+    const {file_id} = req.params
+
+    db.query(query,[file_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
 }

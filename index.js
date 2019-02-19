@@ -14,18 +14,8 @@ if(process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const app = express();
-
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
-const bodyParser = require('body-parser')
-
-const client_route = require('./routes/client');
-const clients_route = require('./routes/clients');
-const file_route = require('./routes/file');
-const folder_route = require('./routes/folder');
-const users_route = require('./routes/users');
-const accessLog_route = require('./routes/accessLog');
-
 const requireAuth = require('./auth/azure-ad.auth') 
 
 
@@ -34,6 +24,8 @@ const requireAuth = require('./auth/azure-ad.auth')
  */
 
 app.use(express.json())
+
+
  /*
    Allow Cross Origin Access 
  */
@@ -53,15 +45,24 @@ app.use(bearerToken())
 app.use(requireAuth())
 
  /**
-  * Definer API ruter
+  * Express use routes 
   */
-app.use('/accesslog', accessLog_route);
-app.use('/clients', clients_route)
-app.use('/client', client_route)
-app.use('/users', users_route)
-app.use('/file', file_route)
-app.use('/folder', folder_route)
-app.use('/useraccess', users_route);
+
+ const routes = {
+  client : require('./routes/client'),
+  clients : require('./routes/clients'),
+  file :  require('./routes/file'),
+  folder : require('./routes/folder'),
+  users : require('./routes/users'),
+  accessLog : require('./routes/accessLog')
+}
+
+app.use('/accesslog', routes.accessLog);
+app.use('/clients', routes.clients)
+app.use('/client', routes.client)
+app.use('/users', routes.users)
+app.use('/file', routes.file)
+app.use('/folder', routes.folder)
  
 
  /**

@@ -57,9 +57,21 @@ exports.move = (req, res) => {
 
  exports.delete = (req, res) => {
     
+    const query = `
+        SELECT delete_folder($1)
+    `
+
+    const {folder_id} = req.params
     
-
-
+    db.query(query,[folder_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
  }
 
 
