@@ -20,6 +20,8 @@ CREATE TABLE Client (
   CONSTRAINT Client_PK PRIMARY KEY(id)
 );
 
+
+CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');
 -- Emil, ta en titt på AccessLog?
 CREATE TABLE AccessLog (
   id UUID DEFAULT gen_random_uuid(),

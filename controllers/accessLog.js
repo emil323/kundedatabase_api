@@ -7,7 +7,12 @@ const errors = require('../errors')
 
 exports.listAccessLog = (req, res) => {
 
-    const query = `SELECT id, client, file, first_name, last_name, time_stamp, ip FROM AccessLog ORDER BY time_stamp DESC limit 500`
+    const query = `
+    SELECT F.name AS file_name, F.id AS file_id, C.name AS client_name, C.id AS client_id, ip, AL.type, timestap AS timestamp
+    FROM AccessLog AS AL, File AS F, Folder AS FO, Client AS C
+    WHERE AL.file_id = F.id
+      AND F.folder_id = FO.id
+      AND FO.client_id = C.id`
 
     db.query(query,null,(err,queryRes) => {
         if(err) {
@@ -23,21 +28,17 @@ exports.listAccessLog = (req, res) => {
 /**
  * Create logItem
  */
-exports.create = (req, res) => {
-    const client = req.body.client
-    const file = req.body.file
-    const first_name = req.user.given_name
-    const last_name = req.user.family_name
+exports.create = (req, file_id, type) => {
+
     const ip = req.user.ipaddr
     
-    const query = `INSERT INTO AccessLog(client, file, first_name, last_name, ip) VALUES($1, $2, $3, $4, $5)`
+    const query = `
+            INSERT INTO AccessLog(file_id, ip, type) 
+            VALUES($1, $2, $3)`
 
-    db.query(query,[client, file, first_name, last_name, ip],(err,queryRes) => {
+    db.query(query,[file_id, ip, type],(err,queryRes) => {
         if(err){
-            res.send({success: false,
-                error: errors.DB_ERR})
-        }else {
-            res.send({success: true})
+            console.log(err)
         }
     })
 

@@ -1,5 +1,6 @@
 const db = require('../database')
 const errors = require('../errors')
+const accessLog = require('./accessLog')
 
 const blobService = require('../storage/azure-storage')
 
@@ -21,7 +22,11 @@ exports.download = (req, res) => {
                 const {ref, type} = queryRes.rows[0]
 
                 blobService.getBlobToStream(ref, res, (error, result, response) => {
-                    if (error) console.log(error)
+                    if (error)  {
+                        console.log(error)
+                    } else {
+                        accessLog.create(req, file_id, 'VIEW_FILE')
+                    }
                 })
             } else {
                 res.sendStatus(404)
