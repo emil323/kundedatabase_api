@@ -17,6 +17,26 @@ exports.list = (req,res) => {
 
 
 /**
+ * Finds or creates user, callback err and user_id 
+ */
+
+exports.find_or_create = (user, callback) => {
+    const query = `SELECT create_or_find_user($1,$2,$3)`
+
+    db.query(query,[user.unique_name, user.given_name, user.family_name],(err,queryRes) => {
+        if(err) {
+            console.log('controllers/find_or_create',err)
+            callback(errors.DB_ERR)
+        } else {
+            //Successful, callback result ()
+            const consultant_id = queryRes.rows[0].create_or_find_user
+            callback(null, consultant_id)
+        }
+        
+    })
+}
+
+/**
  * Create client
  */
 exports.create = (req,res) => {

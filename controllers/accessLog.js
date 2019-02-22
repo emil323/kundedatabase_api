@@ -8,11 +8,21 @@ const errors = require('../errors')
 exports.listAccessLog = (req, res) => {
 
     const query = `
-    SELECT F.name AS file_name, F.id AS file_id, C.name AS client_name, C.id AS client_id, ip, AL.type, timestap AS timestamp
-    FROM AccessLog AS AL, File AS F, Folder AS FO, Client AS C
-    WHERE AL.file_id = F.id
-      AND F.folder_id = FO.id
-      AND FO.client_id = C.id`
+        SELECT
+            client_id,
+            client_name,
+            consultant_id,
+            file_id,
+            file_name,
+            first_name,
+            ip,
+            last_name,
+            timestamp,
+            type
+        FROM AccessLogView
+        ORDER BY timestamp DESC
+        LIMIT 500 
+      `
 
     db.query(query,null,(err,queryRes) => {
         if(err) {
@@ -33,10 +43,10 @@ exports.create = (req, file_id, type) => {
     const ip = req.user.ipaddr
     
     const query = `
-            INSERT INTO AccessLog(file_id, ip, type) 
-            VALUES($1, $2, $3)`
+            INSERT INTO AccessLog(file_id, consultant_id, ip, type) 
+            VALUES($1, $2, $3, $4)`
 
-    db.query(query,[file_id, ip, type],(err,queryRes) => {
+    db.query(query,[file_id, req.user.consultant_id, ip, type],(err,queryRes) => {
         if(err){
             console.log(err)
         }

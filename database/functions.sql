@@ -114,6 +114,37 @@ CREATE TRIGGER create_root_folder_trigger
 
 
 /**
+  Function to create user or find user, and return it's UUID
+ */
+
+ CREATE OR REPLACE FUNCTION create_or_find_user(_email TEXT, _first_name TEXT, _last_name TEXT)
+  RETURNS UUID
+  LANGUAGE 'plpgsql'
+  AS $BODY$
+  DECLARE
+    consultant_id UUID;
+  BEGIN
+    -- Check if user is found, and insert into consultant id
+    SELECT C.id INTO consultant_id
+    FROM Consultant AS C
+    WHERE C.email = _email;
+    -- Create a new consultant entry if not found
+    IF NOT FOUND THEN
+      -- generate a new ID for consultat
+      consultant_id := gen_random_uuid();
+      -- insert user
+      INSERT INTO Consultant (id, email, first_name, last_name)
+      VALUES (consultant_id, _email, _first_name, _last_name);
+    END IF;
+    -- return consultant ID
+    RETURN consultant_id;
+END;
+$BODY$;
+
+SELECT create_or_find_user('emilkalst@gmail.com','Emil','Kalstø');
+SELECT * FROM Consultant;
+
+/**
   Function to create new folder within an existing folder
  */
 -- 8d527188-3cda-4d74-b1ec-a8f08b35822f
@@ -233,8 +264,6 @@ $BODY$;
 END;
 $BODY$;
 
-SELECT delete_file('80de5c29-2be0-4355-8018-510baaa5792e');
-
 SELECT * FROM filesandfolders;
 -- View for combining files and folders into one table
 
@@ -253,16 +282,32 @@ CREATE OR REPLACE VIEW FilesAndFolders AS (
       FROM File, Folder
       WHERE Folder.id = File.folder_id) AS U);
 
-SELECT * FROM AccessLog;
 
-    SELECT D.client_id
-        FROM File AS F, Folder AS D
-        WHERE F.id = '80de5c29-2be0-4355-8018-510baaa5792e'
-        AND F.folder_id = D.id;
+/**
+  View for access log :)
+ */
 
+CREATE OR REPLACE VIEW AccessLogView AS (
+   SELECT F.name AS file_name, F.id AS file_id, CO.first_name, CO.last_name, CO.id AS consultant_id, C.name AS client_name, C.id AS client_id, ip, AL.type, timestamp
+    FROM AccessLog AS AL, File AS F, Folder AS FO, Client AS C, Consultant AS CO
+    WHERE AL.file_id = F.id
+      AND F.folder_id = FO.id
+      AND FO.client_id = C.id
+      AND CO.id = AL.consultant_id);
 
-SELECT F.name AS file_name, F.id AS file_id, C.name AS client_name, C.id AS client_id, ip, AL.type, timestap AS timestamp
-FROM AccessLog AS AL, File AS F, Folder AS FO, Client AS C
-WHERE AL.file_id = F.id
-  AND F.folder_id = FO.id
-  AND FO.client_id = C.id
+SELECT * FROM AccessLogView;
+
+SELECT
+    client_id,
+    client_name,
+    consultant_id,
+    file_id,
+    file_name,
+    first_name,
+    ip,
+    last_name,
+    timestamp,
+    type
+FROM AccessLogView
+ORDER BY timestamp DESC
+LIMIT 500

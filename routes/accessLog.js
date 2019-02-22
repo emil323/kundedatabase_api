@@ -9,6 +9,5 @@ const accessLog = require('../controllers/accessLog')
  */
 
 router.get("/", accessLog.listAccessLog)   
-router.post("/create", accessLog.create) 
 
 module.exports = router
