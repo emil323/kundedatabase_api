@@ -54,9 +54,11 @@ app.use(requireAuth())
   file :  require('./routes/file'),
   folder : require('./routes/folder'),
   users : require('./routes/users'),
-  accessLog : require('./routes/accessLog')
+  accessLog : require('./routes/accessLog'),
+  favourites : require('./routes/favourites')
 }
 
+app.use('/favourites', routes.favourites)
 app.use('/accesslog', routes.accessLog);
 app.use('/clients', routes.clients)
 app.use('/client', routes.client)
