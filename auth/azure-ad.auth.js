@@ -10,6 +10,7 @@ const users = require('../controllers/users')
 module.exports = function() {
     return function(req, res, next) {
         if(req.token) {
+            //Verify JWT token (from microsoft)
             aad.verify(req.token, null, function(err, result) {
                 if(result) {
                     //Set req.user object
@@ -19,6 +20,7 @@ module.exports = function() {
                     //Run find_or_create_user to fetch consultant_id 
                     users.find_or_create(req.user, (err,consultant_id) => {
                         if(err) {
+                            //This didt work, we set 500 (server error)
                             res.sendStatus(500)
                         } else {
                             //Set consultant ID 
@@ -28,6 +30,7 @@ module.exports = function() {
                     })
                 } else {
                     console.log(err)
+                    res.sendStatus(401)
                 }
             })
         } else {
