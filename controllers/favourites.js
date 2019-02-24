@@ -7,14 +7,7 @@ const errors = require('../errors')
 
 exports.listFavourites = (req, res) => {
 
-    const query = `
-        SELECT name, client_id 
-        FROM Favourites as F 
-        INNER JOIN Client as C 
-        ON F.client_id = C.id 
-        INNER JOIN Consultant AS U 
-        ON F.user_id = U.id;
-        `
+    const query = "SELECT name, client_id FROM Favourites as F INNER JOIN Client as C ON F.client_id = C.id INNER JOIN Consultant AS U ON F.user_id = U.id WHERE F.user_id = '" + req.user.consultant_id + "'"
 
     db.query(query,null,(err,queryRes) => {
         if(err) {
