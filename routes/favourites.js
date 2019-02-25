@@ -10,5 +10,6 @@ const favourites = require('../controllers/favourites')
 
 router.get("/", favourites.listFavourites)   
 router.post("/create", favourites.create)   
+router.post("/delete", favourites.delete)
 
 module.exports = router

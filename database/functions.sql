@@ -310,4 +310,22 @@ SELECT
     type
 FROM AccessLogView
 ORDER BY timestamp DESC
-LIMIT 500
+LIMIT 500;
+
+SELECT * FROM Favourites;
+
+-- 6dc3b05a-a7d5-4ea6-9259-9721a69a2d23
+SELECT id,
+       name,
+       CASE WHEN
+         F.client_id IS NULL THEN
+         FALSE ELSE TRUE
+         END AS is_favourite
+FROM Client AS C
+LEFT JOIN Favourites F on C.id = F.client_id
+  AND F.user_id = 'c90716ea-7995-4ab2-b6f8-f01ad24eb87b'
+WHERE is_deleted IS FALSE
+ORDER BY name;
+
+
+SELECT * FROM Consultant
