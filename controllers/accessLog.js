@@ -7,6 +7,12 @@ const errors = require('../errors')
 
 exports.listAccessLog = (req, res) => {
 
+    const client_id = req.params.client_id 
+
+    //Construct where if client id is supplied
+    const where_constraint = client_id === undefined ? '' : 'WHERE client_id=$1'
+    const parameters = client_id === undefined ? null : [client_id]
+    
     const query = `
         SELECT
             client_id,
@@ -20,11 +26,12 @@ exports.listAccessLog = (req, res) => {
             timestamp,
             type
         FROM AccessLogView
+        ${where_constraint}
         ORDER BY timestamp DESC
         LIMIT 500 
       `
 
-    db.query(query,null,(err,queryRes) => {
+    db.query(query,parameters,(err,queryRes) => {
         if(err) {
             console.log(err)
             res.send({success: false, 

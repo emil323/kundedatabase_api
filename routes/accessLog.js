@@ -8,6 +8,6 @@ const accessLog = require('../controllers/accessLog')
  * Routes for /accessLog
  */
 
-router.get("/", accessLog.listAccessLog)   
+router.get("/:client_id?", accessLog.listAccessLog)   
 
 module.exports = router

@@ -7,7 +7,9 @@ const blobService = require('../storage/azure-storage')
 exports.download = (req, res) => {
 
     const query = `
-        SELECT ref, type FROM File WHERE id = $1
+        SELECT ref, type FROM File 
+        WHERE IS_DELETED IS FALSE 
+        AND id = $1
     `
     const file_id =  req.params.file_id
 
