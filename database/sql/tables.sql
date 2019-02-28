@@ -3,7 +3,7 @@ DROP DATABASE IF EXISTS kundedb;
 CREATE DATABASE kundedb;
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "citext"; -- this module is for non case sensitive data
+CREATE EXTENSION IF NOT EXISTS "citext"; -- this module is for non case insensitive text
 
 
 CREATE TYPE AccessType AS ENUM ('VIEW_FILE', 'RENAME_FILE', 'DELETE_FILE','EDIT_FILE');

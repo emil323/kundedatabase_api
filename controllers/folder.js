@@ -63,7 +63,28 @@ exports.move = (req, res) => {
 
     const {folder_id} = req.params
     
+
     db.query(query,[folder_id],(err) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send({success: true})
+        }
+    })
+ }
+
+ exports.recover = (req, res) => {
+    
+    const query = `
+        SELECT recover_folder($1,$2)
+    `
+
+    const {folder_id} = req.params
+    const {new_parent_folder} = req.body
+    
+    db.query(query,[folder_id, new_parent_folder],(err) => {
         if(err) {
             console.log(err)
             res.send({success: false, 
