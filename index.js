@@ -17,6 +17,7 @@ const app = express();
 const cors = require('cors');
 const bearerToken = require('express-bearer-token')
 const requireAuth = require('./auth/azure-ad.auth') 
+const autoRemoval = require('./storage/auto-removal')
 
 
 /**
@@ -67,6 +68,14 @@ app.use('/file', routes.file)
 app.use('/folder', routes.folder)
  
 
+/**
+ * Start auto-removal interval
+ */
+
+ //Change this to how often autoremoval should run
+const interval = 1000 * 60 * 15 //Run every 15 minutes
+setInterval(autoRemoval.run, interval)
+
  /**
  * Start server
  */
@@ -78,3 +87,6 @@ const port = process.env.PORT || 8080;
     console.log("Node.JS Backend API Started: http://localhost:%s", port)
     console.log("-----------------------------")
  })
+
+
+ 
