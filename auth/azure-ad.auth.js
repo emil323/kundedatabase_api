@@ -15,8 +15,10 @@ module.exports = function() {
                 if(result) {
                     //Set req.user object
                     req.user = result 
-                    console.log("Incoming request:" + req.originalUrl)
-
+                    //Set is_admin boolean to true if admin
+                    req.user.is_admin = result.roles ? result.roles.includes(process.env.AD_ADMIN_ROLE) : false
+                    //Log request
+                    console.log("Incoming request:" + req.originalUrl + ' - is_admin: ' + req.user.is_admin)
                     //Run find_or_create_user to fetch consultant_id 
                     users.find_or_create(req.user, (err,consultant_id) => {
                         if(err) {

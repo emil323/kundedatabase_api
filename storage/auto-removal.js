@@ -64,6 +64,7 @@ exports.run = () => {
             if(err) {
                 console.log(err)
             } 
+
             //Remove from DB
             db.query(query,[file.id],(err) => {
                 if(err) {
