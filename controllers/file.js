@@ -4,6 +4,36 @@ const accessLog = require('./accessLog')
 
 const blobService = require('../storage/azure-storage')
 
+exports.metadata = (req, res) => {
+
+    const query = `
+    SELECT  F.name AS file_name, F.id AS file_id,
+            P.name AS folder_name, P.id AS folder_id,
+            C.name AS client_name, C.id AS client_id,
+            F.type AS file_type,
+        CASE
+            WHEN P.parent_id IS NULL THEN TRUE
+            ELSE FALSE
+        END AS parent_is_root
+        FROM FilesAndFolders AS F, Client AS C, Folder AS P
+        WHERE C.id = F.client_id
+            AND F.parent_id = P.id
+            AND is_directory IS FALSE AND C.is_deleted IS FALSE
+            AND F.id = $1
+    `
+    const file_id =  req.params.file_id
+
+    db.query(query,[file_id],(err,queryRes) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send(queryRes.rows[0])
+        }
+    })
+}
+
 exports.download = (req, res) => {
 
     const query = `
@@ -23,7 +53,8 @@ exports.download = (req, res) => {
 
                 const {ref, type} = queryRes.rows[0]
 
-                blobService.getBlobToStream(ref, res, (error, result, response) => {
+                var options =  {contentSettings:{contentType:type}}
+                blobService.getBlobToStream(ref, res, options,(error, result, response) => {
                     if (error)  {
                         console.log(error)
                     } else {
