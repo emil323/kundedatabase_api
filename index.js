@@ -51,6 +51,7 @@ app.use(requireAuth())
 
  const routes = {
   client : require('./routes/client'),
+  metadata : require('./routes/metadata'),
   clients : require('./routes/clients'),
   file :  require('./routes/file'),
   folder : require('./routes/folder'),
@@ -60,12 +61,13 @@ app.use(requireAuth())
 }
 
 app.use('/favourites', routes.favourites)
-app.use('/accesslog', routes.accessLog);
+app.use('/accesslog', routes.accessLog)
 app.use('/clients', routes.clients)
 app.use('/client', routes.client)
 app.use('/users', routes.users)
 app.use('/file', routes.file)
 app.use('/folder', routes.folder)
+app.use('/metadata', routes.metadata)
  
 
 /**

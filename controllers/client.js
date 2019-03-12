@@ -4,6 +4,8 @@ const db = require('../database')
 const errors = require('../errors')
 
 
+
+
 /**
  * Sends client name, rootfolder and it's client ID
  */
@@ -32,6 +34,14 @@ exports.get = (req,res) => {
     })
 
 }
+
+
+
+
+
+/**
+ * List files
+ */
 
 exports.files = (req, res) => {
 

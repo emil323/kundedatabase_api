@@ -53,8 +53,7 @@ exports.download = (req, res) => {
 
                 const {ref, type} = queryRes.rows[0]
 
-                var options =  {contentSettings:{contentType:type}}
-                blobService.getBlobToStream(ref, res, options,(error, result, response) => {
+                blobService.getBlobToStream(ref, res,(error, result, response) => {
                     if (error)  {
                         console.log(error)
                     } else {

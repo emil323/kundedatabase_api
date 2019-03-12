@@ -1,13 +1,10 @@
 
-DROP DATABASE IF EXISTS kundedb;
-CREATE DATABASE kundedb;
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "citext"; -- this module is for non case insensitive text
 
 
-CREATE TYPE AccessType AS ENUM ('VIEW_FILE', 'RENAME_FILE', 'DELETE_FILE','EDIT_FILE');
-
+CREATE TYPE AccessType AS ENUM ('VIEW_FILE', 'RENAME_FILE', 'DELETE_FILE','EDIT_FILE', 'CLIENT_METADATA');
 
 CREATE TABLE Consultant (
   id UUID DEFAULT gen_random_uuid(),
@@ -26,6 +23,20 @@ CREATE TABLE Client (
   CONSTRAINT Client_UQ UNIQUE(name),
   CONSTRAINT Client_PK PRIMARY KEY(id)
 );
+
+CREATE TABLE ClientMetadataDefaultField (
+  value CITEXT PRIMARY KEY
+);
+
+CREATE TABLE ClientMetadata (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID NOT NULL,
+  ref VARCHAR(250) NOT NULL,
+  timestamp TIMESTAMP DEFAULT NOW(),
+  CONSTRAINT ClientMetadata_Client_FK FOREIGN KEY (client_id)
+    REFERENCES Client(id)
+);
+
 
 CREATE TABLE Favourites (
   user_id UUID NOT NULL,
@@ -73,11 +84,12 @@ CREATE TABLE File (
 CREATE TABLE AccessLog (
   id UUID DEFAULT gen_random_uuid(),
   consultant_id UUID,
-  file_id UUID NOT NULL,
+  file_id UUID,
   ip VARCHAR(39) NOT NULL,
   type AccessType NOT NULL,
-  timestap TIMESTAMP DEFAULT NOW(),
+  timestamp TIMESTAMP DEFAULT NOW(),
   CONSTRAINT AccessLog_PK PRIMARY KEY(id),
   CONSTRAINT AccessLog_Consultant FOREIGN KEY (consultant_id) REFERENCES Consultant(id),
   CONSTRAINT AccessLog_File FOREIGN KEY (file_id) REFERENCES File(id)
 );
+
