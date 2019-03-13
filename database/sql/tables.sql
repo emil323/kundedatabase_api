@@ -25,8 +25,10 @@ CREATE TABLE Client (
 );
 
 CREATE TABLE ClientMetadataDefaultField (
-  value CITEXT PRIMARY KEY
+  value CITEXT PRIMARY KEY,
+  value_order INT NOT NULL
 );
+
 
 CREATE TABLE ClientMetadata (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -129,8 +129,8 @@ exports.move = (req, res) => {
 exports.upload = (req,res) => {
 
     const query = `
-        INSERT INTO File(folder_id, name, ref, type) 
-        VALUES($1,$2,$3,$4)
+        INSERT INTO File(folder_id, name, ref, type, size) 
+        VALUES($1,$2,$3,$4,$5)
         `
 
     const folder_id =  req.params.folder_id
@@ -139,8 +139,8 @@ exports.upload = (req,res) => {
     Promise.map(req.files, file => {
         return new Promise((resolve) => {
 
-            const {originalname, mimetype, blobName} = file 
-            const insert = [folder_id, originalname, blobName, mimetype]
+            const {originalname, mimetype, blobName, blobSize} = file 
+            const insert = [folder_id, originalname, blobName, mimetype, blobSize]
 
             db.query(query,insert,(err) => {
                 if(err) {

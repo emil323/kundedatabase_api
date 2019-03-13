@@ -5,12 +5,14 @@ const errors = require('../errors')
 const validate = require("validate.js");
 const accessLog = require('./accessLog')
 const blobService = require('../storage/azure-storage')
+const Promise = require('bluebird')
 
 exports.default_values = (req,res) => {
 
     const query = `
         SELECT value 
         FROM ClientMetadataDefaultField
+        ORDER BY value_order
     `
     db.query(query,null,(err,queryRes) => {
         if(err) {
@@ -24,6 +26,76 @@ exports.default_values = (req,res) => {
     })
 
 }
+
+exports.update_default_values = (req,res) => {
+
+    const {default_values} = req.body
+
+    const insert_query = `
+        INSERT INTO ClientMetadataDefaultField
+        VALUES($1,$2)
+    `
+    const delete_query = `
+        DELETE FROM ClientMetadataDefaultField
+    `
+
+    //Set a maxium om 15 default values, and minimum 1
+    if(default_values.length < 15 && default_values.length > 0) { 
+        /**
+         * Fetch client, to be used for transaction
+         */
+
+        db.getClient((err, client, done) => {
+            if(err) handleErr(err, res) 
+            else {
+                //Start transaction
+                client.query('BEGIN', (err) => {
+                    if(err) handleErr(err,res)
+                    else {
+                        //Delete all old default fields
+                        client.query(delete_query, (err) => {
+                            if(err) handleErr(err,res)
+                            //Insert new default fields
+                            else {
+                                //Use Promise map
+                                Promise.map(default_values, (value, i) => {
+                                    return new Promise((resolve, reject) => {
+                                        //Query insert
+                                        client.query(insert_query,[value.title,i],(err) => {
+                                            if(err) {
+                                            reject(err)
+                                            } else {
+                                                resolve(true)
+                                            }
+                                        })
+                                    })
+                                }, {concurrency:5}) //Maximum 5 queries at a time
+                                .then(result => {
+                                    console.log(result)
+                                    //Commit
+                                    client.query('COMMIT')
+                                    res.send({success:true})
+                                }) 
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    } else {
+        //Send error
+        res.send({success:false,
+            error:errors.INVALID_INPUT})
+    }
+
+    const handleErr = (err, res) => {
+        console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+    }
+
+}
+
 
 /**
  * Retrives client metadata if available
@@ -92,7 +164,7 @@ exports.update_metadata = (req,res) => {
             presence:true
         }
     }
-    console.log(req.body.data)
+    console.log(req.body)
     //validate data using validate.js
     const data_valid = validate.isArray(raw_data) 
         ? raw_data.every(value => { //Validate each object in array using every()

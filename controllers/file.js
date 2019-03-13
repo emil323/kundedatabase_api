@@ -10,7 +10,7 @@ exports.metadata = (req, res) => {
     SELECT  F.name AS file_name, F.id AS file_id,
             P.name AS folder_name, P.id AS folder_id,
             C.name AS client_name, C.id AS client_id,
-            F.type AS file_type,
+            F.type AS file_type, F.size,
         CASE
             WHEN P.parent_id IS NULL THEN TRUE
             ELSE FALSE
