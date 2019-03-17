@@ -5,14 +5,38 @@ const errors = require('../errors')
  * List access log
  */
 
+ //TODO: Move to its own type file
+ const CLIENT = 'client'
+ const FILE = 'file'
+ const CONSULTANT = 'consultant'
+ const IP = 'ip'
+
 exports.listAccessLog = (req, res) => {
 
-    const client_id = req.params.client_id 
+    const type = req.params.type
+    const id = req.params.id 
 
-    //Construct where if client id is supplied
-    const where_constraint = client_id === undefined ? '' : 'WHERE client_id=$1'
-    const parameters = client_id === undefined ? null : [client_id]
-    
+    let where_constraint = ''
+    let parameters = null
+
+    switch(type) {
+        case CLIENT:
+            where_constraint =  'WHERE client_id=$1'
+            parameters = [id] 
+        break
+        case FILE:
+            where_constraint =  'WHERE file_id=$1'
+            parameters = [id] 
+        break 
+        case CONSULTANT:
+            where_constraint =  'WHERE consultant_id=$1'
+            parameters = [id] 
+        case IP:
+            where_constraint =  'WHERE ip=$1'  
+            parameters = [id] 
+        break 
+    }
+
     const query = `
         SELECT
             client_id,
