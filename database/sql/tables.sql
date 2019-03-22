@@ -91,7 +91,6 @@ CREATE TABLE AccessLog (
   type AccessType NOT NULL,
   timestamp TIMESTAMP DEFAULT NOW(),
   CONSTRAINT AccessLog_PK PRIMARY KEY(id),
-  CONSTRAINT AccessLog_Consultant FOREIGN KEY (consultant_id) REFERENCES Consultant(id),
-  CONSTRAINT AccessLog_File FOREIGN KEY (file_id) REFERENCES File(id)
+  CONSTRAINT AccessLog_Consultant FOREIGN KEY (consultant_id) REFERENCES Consultant(id)
 );
 

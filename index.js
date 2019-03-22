@@ -45,6 +45,17 @@ app.use(bearerToken())
 */
 app.use(requireAuth())
 
+/*
+  Forbid request caching
+*/
+
+app.use((req, res, next) => {
+  res.setHeader('Expires', '-1')
+  res.setHeader('Cache-Control', 'no-cache')
+  next()
+})
+
+
  /**
   * Express use routes 
   */

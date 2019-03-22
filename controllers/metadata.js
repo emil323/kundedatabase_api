@@ -106,31 +106,37 @@ exports.get = (req,res) => {
 
     const clientID = req.params.client_id
 
-    const query = `
-        SELECT ref
-        FROM ClientMetadata
-        WHERE client_id = $1
-        ORDER BY timestamp DESC
-        LIMIT 1
-    `
+    /**
+     * Get reference for metadata file, and root folder.
+     * We need root folder, because accesslog requires a file_id to reference to. 
+     */
 
+    const query = `
+        SELECT M.ref, F.id AS root_id
+        FROM ClientMetadata AS M, FilesAndFolders AS F
+        WHERE M.client_id = F.client_id
+        AND M.client_id = $1
+        AND F.is_root IS TRUE AND F.is_deleted IS FALSE
+        ORDER BY timestamp DESC
+        LIMIT 1;
+    `
     db.query(query,[clientID],(err,queryRes) => {
         if(err) {
-            console.log(err)
             res.send({success: false, 
                 error: errors.DB_ERR})
                 //TODO: Mor error handling
         } else {
             //Check if metadata row was found
             if(queryRes.rows.length > 0) {
-                const ref = queryRes.rows[0].ref
+                const {ref, root_id} = queryRes.rows[0]
+
                 //Attempt to fetch JSON file that contains metadata
                 blobService.getBlobToStream(ref, res,(error, result, response) => {
                     if (error)  {
                         console.log(error)
                     } else {
                         //TODO: Add accesslog entry here
-                        accessLog.create(req, null, 'CLIENT_METADATA')
+                        accessLog.create(req, root_id, 'CLIENT_METADATA')
                     }
                 })
             } else {

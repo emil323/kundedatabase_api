@@ -1,5 +1,6 @@
 const db = require('../database')
 const errors = require('../errors')
+const ObjectsToCsv = require('objects-to-csv')
 
 /**
  * List access log
@@ -13,8 +14,15 @@ const errors = require('../errors')
 
 exports.listAccessLog = (req, res) => {
 
+    async function sendCSV(res,data) {
+        res.send(
+            await new ObjectsToCsv(data).toString()
+        )
+    }
+
     const type = req.params.type
     const id = req.params.id 
+    const csv_export = req.query.csv_export
 
     let where_constraint = ''
     let parameters = null
@@ -31,6 +39,7 @@ exports.listAccessLog = (req, res) => {
         case CONSULTANT:
             where_constraint =  'WHERE consultant_id=$1'
             parameters = [id] 
+        break    
         case IP:
             where_constraint =  'WHERE ip=$1'  
             parameters = [id] 
@@ -43,6 +52,7 @@ exports.listAccessLog = (req, res) => {
             client_name,
             consultant_id,
             file_id,
+            parent_id,
             file_name,
             first_name,
             ip,
@@ -52,7 +62,7 @@ exports.listAccessLog = (req, res) => {
         FROM AccessLogView
         ${where_constraint}
         ORDER BY timestamp DESC
-        LIMIT 500 
+        ${csv_export ? '' : 'LIMIT 500'}
       `
 
     db.query(query,parameters,(err,queryRes) => {
@@ -61,7 +71,7 @@ exports.listAccessLog = (req, res) => {
             res.send({success: false, 
                 error: errors.DB_ERR})
         } else {
-            res.send({accesslog: queryRes.rows})
+            csv_export ? sendCSV(res, queryRes.rows) : res.send({accesslog: queryRes.rows})
         }
     })
 }   
@@ -72,14 +82,14 @@ exports.listAccessLog = (req, res) => {
 exports.create = (req, file_id, type) => {
 
     const ip = req.user.ipaddr
-    
+    console.log('create')
     const query = `
             INSERT INTO AccessLog(file_id, consultant_id, ip, type) 
             VALUES($1, $2, $3, $4)`
-
+    
     db.query(query,[file_id, req.user.consultant_id, ip, type],(err,queryRes) => {
         if(err){
-            console.log(err)
+            console.log('accesslog', err)
         }
     })
 
