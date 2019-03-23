@@ -21,9 +21,9 @@ exports.list = (req,res) => {
  */
 
 exports.find_or_create = (user, callback) => {
-    const query = `SELECT create_or_find_user($1,$2,$3)`
+    const query = `SELECT create_or_find_user($1,$2,$3,$4)`
 
-    db.query(query,[user.unique_name, user.given_name, user.family_name],(err,queryRes) => {
+    db.query(query,[user.unique_name, user.given_name, user.family_name, user.is_admin],(err,queryRes) => {
         if(err) {
             console.log('controllers/find_or_create',err)
             callback(errors.DB_ERR)

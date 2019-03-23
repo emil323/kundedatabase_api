@@ -22,6 +22,7 @@ module.exports = function() {
                     //Run find_or_create_user to fetch consultant_id 
                     users.find_or_create(req.user, (err,consultant_id) => {
                         if(err) {
+                            console.log(err)
                             //This didt work, we set 500 (server error)
                             res.sendStatus(500)
                         } else {
