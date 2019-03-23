@@ -10,6 +10,5 @@ const users = require('../controllers/users')
 
 router.get("/", users.list)
 router.post("/create", users.create)   
-router.get('/:token', users.list) 
 
 module.exports = router

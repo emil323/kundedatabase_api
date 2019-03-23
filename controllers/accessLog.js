@@ -50,13 +50,13 @@ exports.listAccessLog = (req, res) => {
         SELECT
             client_id,
             client_name,
-            consultant_id,
             file_id,
             parent_id,
+            consultant_id,
             file_name,
             first_name,
-            ip,
             last_name,
+            ip,
             timestamp,
             type
         FROM AccessLogView

@@ -8,10 +8,18 @@ const errors = require('../errors')
 
 exports.list = (req,res) => {
 
-    const query = `SELECT id, email, first_name, last_name FROM Consultant`
+    const query = `
+    SELECT id, email, first_name, last_name, is_admin, blocked
+    FROM Consultant`
 
     db.query(query,null,(err,queryRes) => {
-        res.send({users: queryRes.rows})
+        if(err) {
+            console.log('controllers/users - list()',err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            res.send(queryRes.rows)
+        }
     })
 }
 
@@ -25,7 +33,7 @@ exports.find_or_create = (user, callback) => {
 
     db.query(query,[user.unique_name, user.given_name, user.family_name, user.is_admin],(err,queryRes) => {
         if(err) {
-            console.log('controllers/find_or_create',err)
+            console.log('controllers/users - find_or_create()',err)
             callback(errors.DB_ERR)
         } else {
             //Successful, callback result ()
