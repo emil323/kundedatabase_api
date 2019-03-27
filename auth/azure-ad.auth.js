@@ -12,7 +12,8 @@ module.exports = function() {
         if(req.token) {
             //Verify JWT token (from microsoft)
             aad.verify(req.token, null, function(err, result) {
-                if(result) {
+                //Check if JWT token is meant for this application
+                if(result && result.aud === process.env.APP_ID) {
                     //Set req.user object
                     req.user = result 
                     //Set is_admin boolean to true if admin

@@ -67,11 +67,53 @@ exports.download = (req, res) => {
     })
 }
 
+exports.edit = (req, res) => {
+
+    const {file_id} = req.params
+    const {content} = req.body
+
+    const metadata_query = `
+        SELECT ref, type FROM File 
+        WHERE IS_DELETED IS FALSE 
+        AND id = $1`
+
+    const update_query = `
+        UPDATE File
+        SET last_changed = NOW()
+        WHERE id = $1`
+        
+    db.query(metadata_query,[file_id],(err, queryRes) => {
+        if(err) {
+            console.log(err)
+            res.send({success: false, 
+                error: errors.DB_ERR})
+        } else {
+            if(queryRes.rows.length > 0 ) {
+                blobService.createBlockBlobFromText(ref, content, (err)=> {
+                    if(err) {
+                        res.send({success: false, 
+                            error: errors.STORAGE_ERR})
+                    } else {
+                        //File updated correctly, update last changed, but don't require
+                        res.send({success: true})
+
+                        //Update, without callback
+                        db.query(update_query,[file_id])
+                    }
+                })
+            } else {
+                res.send({success: false, 
+                    error: errors.INVALID_INPUT}) 
+            }
+        }
+    })
+}
+
 exports.rename = (req, res) => {
 
     const query = `
         UPDATE File
-        SET name = $1
+        SET last_changed = $1
         WHERE id = $2
     `
     const {file_id} = req.params

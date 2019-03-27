@@ -25,6 +25,9 @@ blobService.createContainerIfNotExists(process.env.AZURE_STORAGE_CONTAINER, {
     getBlobToStream: (name, stream, callback) => {
       return blobService.getBlobToStream(process.env.AZURE_STORAGE_CONTAINER, name, stream, callback)
     },
+    createBlob: (name, content, callback) => {
+      return blobService.getBlobToStream(process.env.AZURE_STORAGE_CONTAINER, name, stream, callback)
+    },
     deleteBlob: (filename, callback) => {
       return blobService.deleteBlob(process.env.AZURE_STORAGE_CONTAINER, filename, (err) => {
         if (err) {
