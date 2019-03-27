@@ -10,7 +10,7 @@ module.exports = function() {
             return next()
         } else {
             //Not admin
-            res.sendStatus(401)
+            res.sendStatus(403)
             res.end()
         }
     }
