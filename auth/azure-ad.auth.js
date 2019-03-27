@@ -34,7 +34,8 @@ module.exports = function() {
                     })
                 } else {
                     console.log(err)
-                    res.sendStatus(401)
+                    //Check if JWT token is expired
+                    res.sendStatus(499)
                 }
             })
         } else {
