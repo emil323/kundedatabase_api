@@ -13,7 +13,7 @@
     cur_last_name TEXT;
   BEGIN
     -- Check if user is found, and insert into consultant id
-    SELECT C.id, C.is_admin INTO consultant_id, cur_admin_status
+    SELECT C.id, C.is_admin, C.first_name, C.last_name INTO consultant_id, cur_admin_status, cur_first_name, cur_last_name
     FROM Consultant AS C
     WHERE C.email = _email;
     -- Create a new consultant entry if not found
