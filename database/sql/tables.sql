@@ -11,6 +11,8 @@ CREATE TABLE Consultant (
   email CITEXT UNIQUE NOT NULL,
   first_name TEXT,
   last_name TEXT,
+  is_admin BOOLEAN NOT NULL,
+  blocked BOOLEAN NOT NULL,
   CONSTRAINT Consultant_PK PRIMARY KEY(id)
 );
 
@@ -78,6 +80,7 @@ CREATE TABLE File (
   delete_date TIMESTAMP,
   permanently_deleted BOOLEAN DEFAULT FALSE,
   last_changed TIMESTAMP DEFAULT NOW(),
+  size INT NOT NULL,
   CONSTRAINT File_UQ UNIQUE (folder_id,name),
   CONSTRAINT File_PK PRIMARY KEY (id),
   FOREIGN KEY (folder_id) REFERENCES Folder(id)
