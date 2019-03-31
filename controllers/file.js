@@ -113,7 +113,7 @@ exports.rename = (req, res) => {
 
     const query = `
         UPDATE File
-        SET last_changed = $1
+        SET name = $1
         WHERE id = $2
     `
     const {file_id} = req.params

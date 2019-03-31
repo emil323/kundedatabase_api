@@ -48,7 +48,7 @@ exports.files = (req, res) => {
     const clientID = req.params.client_id
 
     const query = `
-        SELECT id,client_id,parent_id,name,ref, type,last_changed, is_deleted,is_directory, is_root
+        SELECT id,client_id,parent_id,name,ref, type,last_changed, size, is_deleted,is_directory, is_root
         FROM FilesAndFolders
         WHERE permanently_deleted IS FALSE
         AND client_id = $1
